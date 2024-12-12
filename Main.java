@@ -1,22 +1,19 @@
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Scanner;
-import java.io.*;
-import java.util.regex.*;
-public class Main {
-    public static void check(String s){
-        try{
-            File file=new File(s);
-            BufferedReader br=new BufferedReader(new FileReader(file));
-
-
-        }
-        catch(IOException e) {
-            System.out.println("Error reading or writing files: " + e.getMessage());
-        }
-    }
-    public static void main(String[] args) throws FileNotFoundException {
+import java.util.Formatter;
+import java.io.FileWriter;
+public class Main{
+    public static void main(String[] args) {
         Scanner sc=new Scanner(System.in);
+        Scanner reader=null;
         System.out.println("Please enter the file name: ");
-        String s=sc.nextLine();
+        String filename=sc.nextLine();
+        try{
+            reader=new Scanner(Paths.get("filename.txt"));
+        }
+        catch(IOException e){
 
+        }
     }
 }
