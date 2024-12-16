@@ -74,13 +74,13 @@ public class CountryMap {
 
     }
 
-    public void deneme(){
+    /*public void deneme(){
         for (int i =0;i<getRouteTable1().length;i++){
             System.out.println(getRouteTable1()[i].getCity1());
             System.out.println(getRouteTable2()[i].getCity2());
             System.out.println(getTimes()[i]);
 
         }
-    }
+    }*/
 
 }

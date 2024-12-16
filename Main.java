@@ -79,7 +79,7 @@ public class Main{
             countryMap.setTimes(Times);
 
 
-            countryMap.deneme();
+            //countryMap.deneme();
 
         }
         catch(IOException e){
