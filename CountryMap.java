@@ -1,11 +1,24 @@
 public class CountryMap {
-    private City[] city;
     private int NumRoutes;
     private char city1;
     private char city2;
     private int[] times;
     private CountryMap[] RouteTable1;
     private CountryMap[] RouteTable2;
+    private String StartLabel;
+    private String FinishLabel;
+    public void setStartLabel(String StartLabel){
+        this.StartLabel=StartLabel;
+    }
+    public String getStartLabel(){
+        return StartLabel;
+    }
+    public void setFinishLabel(String FinishLabel){
+        this.FinishLabel=FinishLabel;
+    }
+    public String getFinishLabel(){
+        return FinishLabel;
+    }
 
 
     public int[] getTimes() {
@@ -37,19 +50,25 @@ public class CountryMap {
         if(numCities<=0){
             throw new IllegalArgumentException("Error:The number of cities or routes must be greater than zero!");
         }
-        this.city=new City[numCities];
         this.city1=city1;
         this.city2=city2;
-        this.NumRoutes=getNumRoutes();
+        this.NumRoutes=NumRoutes;
         this.times=new int[NumRoutes];
         this.RouteTable1=new CountryMap[NumRoutes];
         this.RouteTable2=new CountryMap[NumRoutes];
+        this.StartLabel=StartLabel;
+        this.FinishLabel=FinishLabel;
+
 
     }
 
 
+
     public int getNumRoutes(){
         return NumRoutes;
+    }
+    public void setNumRoutes(int NumRoutes){
+        this.NumRoutes=NumRoutes;
     }
 
 
@@ -74,13 +93,15 @@ public class CountryMap {
 
     }
 
-    /*public void deneme(){
+   /*public void deneme(){
         for (int i =0;i<getRouteTable1().length;i++){
             System.out.println(getRouteTable1()[i].getCity1());
             System.out.println(getRouteTable2()[i].getCity2());
             System.out.println(getTimes()[i]);
 
         }
+        System.out.println(getStartLabel());
+        System.out.println(getFinishLabel());
     }*/
 
 }

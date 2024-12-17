@@ -39,6 +39,9 @@ public class Main{
             int[] Times=new int[NumRoutes];
             CountryMap [] RouteTable1 = new CountryMap[NumRoutes];
             CountryMap [] RouteTable2 = new CountryMap[NumRoutes];
+            String StartLabel=new String();
+            String FinishLabel=new String();
+
 
 
 
@@ -63,23 +66,43 @@ public class Main{
                         line = reader.nextLine();
                     }
 
-                    System.out.println(" ");
+
 
                 }
+                if(currentLine==4){
+                    currentLine=totallines;
+                }
+
+
                 if(currentLine==totallines){
-                    String StartLabel =line.substring(0,1);
-                    String FinishLabel =line.substring(2,3);
+
+                   StartLabel =line.substring(0,1);
+                   FinishLabel =line.substring(2,3);
+
+
 
                 }
 
             }
 
+
             countryMap.setRouteTable1(RouteTable1);
             countryMap.setRouteTable2(RouteTable2);
             countryMap.setTimes(Times);
+            countryMap.setStartLabel(StartLabel);
+            countryMap.setFinishLabel(FinishLabel);
+            countryMap.setNumRoutes(NumRoutes);
+
+
+
 
 
             //countryMap.deneme();
+            WayFinder wayFinder = new WayFinder(countryMap);
+
+            // Find and display the fastest way
+            String result = wayFinder.findFastestRoute(StartLabel,FinishLabel);
+            System.out.println(result);
 
         }
         catch(IOException e){
