@@ -1,92 +1,62 @@
+import java.io.FileWriter;
+import java.io.IOException;
 public class WayFinder {
-    private CountryMap map;
+    private CountryMap countryMap;
     private int[] distances;
     private boolean[] visited;
-    private int[] predecessors;
+    private int[] previous;
 
-    public WayFinder(CountryMap map) {
-        this.map = map;
+    public WayFinder(CountryMap countryMap) {
+        this.countryMap = countryMap;
     }
 
+    //---------------------------------------------------------FİND FASTEST WAY------------------------------------------------
     public String findFastestRoute(String startLabel, String endLabel) {
-        int numRoutes = map.getNumRoutes();
+        int numRoutes = countryMap.getNumRoutes();
         char[] cityLabels = getCityLabels();
         int cityCount = cityLabels.length;
-
         distances = new int[cityCount];
         visited = new boolean[cityCount];
-        predecessors = new int[cityCount];
-
-
+        previous = new int[cityCount];
+        // Set initial distances to infinity and mark all cities as unvisited
         for (int i = 0; i < cityCount; i++) {
             distances[i] = Integer.MAX_VALUE;
             visited[i] = false;
-            predecessors[i] = -1;
+            previous[i] = -1;
         }
-
-
-        int startIndex = getCityIndex(startLabel.charAt(0), cityLabels);
-        distances[startIndex] = 0;
-
+        int StartPosition = getCityPosition(startLabel.charAt(0), cityLabels);
+        distances[StartPosition] = 0;
+        //Find the shortest way to all cities
         for (int i = 0; i < cityCount - 1; i++) {
-            int current = getMinDistanceIndex(cityCount);
+            int current = getMinDistance(cityCount);
             if (current == -1) break;
             visited[current] = true;
-
-
+            // Update distances for neighbors of the current city
             for (int j = 0; j < numRoutes; j++) {
-                char city1 = map.getRouteTable1()[j].getCity1();
-                char city2 = map.getRouteTable2()[j].getCity2();
-                int time = map.getTimes()[j];
-
-                int neighborIndex = -1;
+                char city1 = countryMap.getRouteTable1()[j].getCity1();
+                char city2 = countryMap.getRouteTable2()[j].getCity2();
+                int time = countryMap.getTimes()[j];
+                int neighborPosition = -1;
                 if (city1 == cityLabels[current]) {
-                    neighborIndex = getCityIndex(city2, cityLabels);
+                    neighborPosition = getCityPosition(city2, cityLabels);
                 } else if (city2 == cityLabels[current]) {
-                    neighborIndex = getCityIndex(city1, cityLabels);
+                    neighborPosition = getCityPosition(city1, cityLabels);
                 } else {
                     continue;
                 }
-
-                if (!visited[neighborIndex] && distances[current] + time < distances[neighborIndex]) {
-                    distances[neighborIndex] = distances[current] + time;
-                    predecessors[neighborIndex] = current;
+                if (!visited[neighborPosition] && distances[current] + time < distances[neighborPosition]) {
+                    distances[neighborPosition] = distances[current] + time;
+                    previous[neighborPosition] = current;
                 }
             }
         }
-
-        return buildPath(startIndex, getCityIndex(endLabel.charAt(0), cityLabels), cityLabels);
+        String result = PathBuilder(StartPosition, getCityPosition(endLabel.charAt(0), cityLabels), cityLabels);
+        FileWriter(result, "output.txt");
+        return result;
     }
 
-    private char[] getCityLabels() {
-
-        int numRoutes = map.getNumRoutes();
-        char[] tempLabels = new char[numRoutes * 2];
-        int index = 0;
-
-        for (int i = 0; i < numRoutes; i++) {
-            char city1 = map.getRouteTable1()[i].getCity1();
-            char city2 = map.getRouteTable2()[i].getCity2();
-
-            if (!isInArray(city1, tempLabels, index)) {
-                tempLabels[index++] = city1;
-            }
-            if (!isInArray(city2, tempLabels, index)) {
-                tempLabels[index++] = city2;
-            }
-        }
-
-
-        char[] cityLabels = new char[index];
-        for (int i = 0; i < index; i++) {
-            cityLabels[i] = tempLabels[i];
-        }
-
-        return cityLabels;
-    }
-
-
-    private boolean isInArray(char c, char[] array, int length) {
+    // Checks if a character exists in an array
+    private boolean ArrayControl(char c, char[] array, int length) {
         for (int i = 0; i < length; i++) {
             if (array[i] == c) {
                 return true;
@@ -95,7 +65,35 @@ public class WayFinder {
         return false;
     }
 
-    private int getCityIndex(char label, char[] cityLabels) {
+    // Retrieves all unique city labels from the CountryMap
+    private char[] getCityLabels() {
+        int numRoutes = countryMap.getNumRoutes();
+        char[] tempLabels = new char[numRoutes * 2];
+        int position = 0;
+        // Add city labels
+        for (int i = 0; i < numRoutes; i++) {
+            char city1 = countryMap.getRouteTable1()[i].getCity1();
+            char city2 = countryMap.getRouteTable2()[i].getCity2();
+
+            if (!ArrayControl(city1, tempLabels, position)) {
+                tempLabels[position++] = city1;
+            }
+            if (!ArrayControl(city2, tempLabels, position)) {
+                tempLabels[position++] = city2;
+            }
+        }
+
+        // A final array which contains only unique labels
+        char[] cityLabels = new char[position];
+        for (int i = 0; i < position; i++) {
+            cityLabels[i] = tempLabels[i];
+        }
+
+        return cityLabels;
+    }
+
+    // Retrieves the position of a city in the cityLabels array
+    private int getCityPosition(char label, char[] cityLabels) {
         for (int i = 0; i < cityLabels.length; i++) {
             if (cityLabels[i] == label) {
                 return i;
@@ -104,30 +102,41 @@ public class WayFinder {
         return -1;
     }
 
-    private int getMinDistanceIndex(int cityCount) {
-        int minIndex = -1, minValue = Integer.MAX_VALUE;
+    // Retrieves the index of the unvisited city with the smallest distance
+    private int getMinDistance(int cityCount) {
+        int MinPosition = -1, minValue = Integer.MAX_VALUE;
         for (int i = 0; i < cityCount; i++) {
             if (!visited[i] && distances[i] < minValue) {
                 minValue = distances[i];
-                minIndex = i;
+                MinPosition = i;
             }
         }
-        return minIndex;
+        return MinPosition;
     }
 
-    private String buildPath(int startIndex, int endIndex, char[] cityLabels) {
-        if (distances[endIndex] == Integer.MAX_VALUE) {
+    // Constructs the path from start to end position
+    private String PathBuilder(int StartPosition, int EndPosition, char[] cityLabels) {
+        if (distances[EndPosition] == Integer.MAX_VALUE) {
             return "No route found!";
         }
 
         StringBuilder path = new StringBuilder();
-        int current = endIndex;
+        int current = EndPosition;
         while (current != -1) {
             path.insert(0, cityLabels[current]);
-            current = predecessors[current];
+            current = previous[current];
             if (current != -1) path.insert(0, " -> ");
         }
 
-        return "Fastest Way: " + path + "\nTotal Time: " + distances[endIndex] + " min";
+        return "Fastest Way: " + path + "\nTotal Time: " + distances[EndPosition] + " min";
+    }
+
+    // Writes the result to an output file
+    private void FileWriter(String result, String filePath) {
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.write(result);
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
     }
 }

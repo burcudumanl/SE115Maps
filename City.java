@@ -1,19 +1,30 @@
 public class City {
-    private String citylabel;
+    private char citylabel;
+    private boolean visited;
 
-    public City(String citylabel){
+    public City(char citylabel,boolean visited){
         this.citylabel=citylabel;
+        this.visited=visited;
     }
-    public void setCitylabel(String citylabel){
+
+    public City(){
+
+    }
+    //SET-GET0
+    public void setVisited(boolean Visited){
+        this.visited=Visited;
+    }
+
+    public boolean getVisited(){
+        return visited;
+    }
+    //SET-GET1
+    public void setCitylabel(char citylabel){
         this.citylabel=citylabel;
 
     }
-    public String getCitylabel(){
+    public char getCitylabel(){
         return citylabel;
     }
-
-
-
-
 
 }
